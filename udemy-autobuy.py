@@ -2,8 +2,8 @@ import requests, threading, time, traceback
 from multiprocessing import Queue
 q = Queue()
 
-bearer = ".."
-cookies = """..."""
+bearer = ".." # get this from chrome devtools -> network tab
+cookies = """...""" # same as bearer
 def buy(queue):
 	global bearer
 	global cookies
