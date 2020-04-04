@@ -16,8 +16,8 @@ def processpage(num):
 		courseid = content.split('https://udemy-images.udemy.com/course/')[1].split('"')[0].split('/')[-1].split('_')[0]
 		coupon = ""
 		if geturl or 'line-through' in content:
-			link = content.split('cardHeader" href="')[1].split('"')[0]
-			details = requests.get(link.replace('/english/', '/go/')).text
+			link = content.split('"card-header" href="')[1].split('"')[0]
+			details = requests.get(link.replace('/English/', '/go/')).text
 			url = "https://www.udemy.com/" + details.split('<a  href="https://www.udemy.com/')[1].split('" target="_blank">')[0]
 			if("\n" in url or len(url) > 200):
 				continue
@@ -30,7 +30,8 @@ def processpage(num):
 		else:
 			f.write(courseid + "|" + coupon + "\n")
 		f.close()
-	return re.sub(r"\s+", '', data).split('">»</a></li></div>')[0].split('</a></li><li><ahref="https://www.discudemy.com/all/')[0].split('>')[1]
+	return 999
+#	return re.sub(r"\s+", '', data).split('">»</a></li></div>')[0].split('</a></li><li><ahref="https://www.discudemy.com/all/')[0].split('>')[1]
 
 if sys.argv[2] == "atonce":
 	processpage(0)
