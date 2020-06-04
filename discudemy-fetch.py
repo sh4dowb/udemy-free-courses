@@ -1,41 +1,61 @@
 import requests, re, sys
-if len(sys.argv) != 3:
-	print("Usage: python udemy.py <url/id> <pagebypage/atonce>\n")
-	print("url = output format is URL with coupon parameter - better for sharing")
-	print("id = output format: id|coupon - probably better for using with bots\n")
-	print("pagebypage = fetch from discudemy.com slower, page by page.")
-	print("atonce = fetch from discudemy.com quicker, but sometimes it won't work")
-	exit()
-	
-geturl = sys.argv[1] == "url"
-def processpage(num):
-	data = requests.get("https://www.discudemy.com/language/english/"+str(num)).text
-	contents = re.findall(re.compile('<section class="card">((.|\n)*?)<div class="extra content">', re.MULTILINE), data)
-	for content in contents:
-		content = content[0]
-		courseid = content.split('https://udemy-images.udemy.com/course/')[1].split('"')[0].split('/')[-1].split('_')[0]
-		coupon = ""
-		if geturl or 'line-through' in content:
-			link = content.split('"card-header" href="')[1].split('"')[0]
-			details = requests.get(link.replace('/English/', '/go/')).text
-			url = "https://www.udemy.com/" + details.split('<a  href="https://www.udemy.com/')[1].split('" target="_blank">')[0]
-			if("\n" in url or len(url) > 200):
-				continue
-			if "couponCode" in url:
-				coupon = url.split('couponCode=')[1].split('&')[0]
-		
-		f = open("udemy_free.txt", "a")
-		if geturl:
-			f.write(url + "\n")
-		else:
-			f.write(courseid + "|" + coupon + "\n")
-		f.close()
-	return 999
-#	return re.sub(r"\s+", '', data).split('">»</a></li></div>')[0].split('</a></li><li><ahref="https://www.discudemy.com/all/')[0].split('>')[1]
+if len(sys.argv) == 1:
+        print("Usage: python udemy.py baseurl [saveid] [quick]\n")
+        print("baseurl: discudemy URL without page number (example: https://www.discudemy.com/language/english/ )\n")
+        print("saveid: 1 if you want to use with autobuy script")
+        print("quick: 1 if you want to quick scrape all\n")
+        print("")
+        exit()
 
-if sys.argv[2] == "atonce":
-	processpage(0)
-else:
-	lastpage = processpage(1)
-	for i in range(1, lastpage + 1):
-		processpage(i)
+
+baseurl = sys.argv[1]
+saveid = len(sys.argv) > 2 and sys.argv[2] == "1"
+quick = len(sys.argv) > 3 and sys.argv[3] == "1"
+# quick mode sets page to 0, and all courses are shown at the same page
+
+if not baseurl.endswith("/"):
+        baseurl += "/"
+
+f = open("udemy_free.txt","a")
+
+page = 0 if quick else 1
+while True:
+        resp = requests.get(baseurl + str(page)).text
+        courses = resp.split('<section class="card">')[1:]
+
+        for course in courses:
+                if "adsbygoogle" in course:
+                        continue
+                url = course.split('href="')[1].split('"')[0]
+                title = course.split('href="')[1].split('">')[1].split('</')[0]
+                cid = course.split('responsive" src="')[1].split('">')[0].split('/')[-1].split('_')[0]
+
+                gourl = url.split('/')
+                gourl[-2] = "go"
+                goresp = requests.get('/'.join(gourl)).text
+                courseurl = goresp.split('Course Coupon:')[1].split('">')[1].split('</')[0]
+                coupon = "N/A"
+                try:
+                        coupon = courseurl.split('?couponCode=')[1]
+                except:
+                        pass
+
+                print("writing to udemy_free.txt : "+title)
+                if saveid:
+                        if coupon == "N/A":
+                                continue
+                        f.write("{}|{}\n".format(cid, coupon))
+                else:
+                        f.write(courseurl+"\n")
+
+                f.flush()
+
+        if "<li>" not in resp.split('pagination3')[1].split('</div>')[0].split(' class="active"')[1]:
+                exit()
+
+        if quick:
+                break
+
+        page += 1
+
+f.close()
