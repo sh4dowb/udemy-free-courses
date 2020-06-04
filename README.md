@@ -19,7 +19,7 @@ example:
 python3 discudemy-fetch.py https://www.discudemy.com/language/english/ 0 1
 # writes urls to udemy_free.txt
 ```
-
+for autobuy:
 ```
 python3 discudemy-fetch.py https://www.discudemy.com/language/english/ 1 1
 # writes id|coupon to udemy_free.txt
