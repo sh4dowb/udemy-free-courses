@@ -1,4 +1,5 @@
 import requests, re, sys
+# python3 udemy.py https://www.discudemy.com/language/English/ 0 0
 if len(sys.argv) == 1:
         print("Usage: python udemy.py baseurl [saveid] [quick]\n")
         print("baseurl: discudemy URL without page number (example: https://www.discudemy.com/language/english/ )\n")
