@@ -1,5 +1,4 @@
 // Usage: edit "courses" variable, go to udemy.com, press F12, paste this to console and run.
-// todo: parse rate limiting and wait accordingly
 
 
 function getCookie(cname) {
@@ -70,7 +69,7 @@ async function buyall() {
   for (courseindex in courses) {
     var cid = courses[courseindex].split("|")[0];
     var coupon = courses[courseindex].split("|")[1];
-    await fetch("https://www.udemy.com/payment/checkout-submit/", {
+    var presp = await fetch("https://www.udemy.com/payment/checkout-submit/", {
         "credentials": "include",
         "headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0",
@@ -90,8 +89,11 @@ async function buyall() {
         "method": "POST",
         "mode": "cors"
     });
-
-    await sleep(5000);
+    var prespjson = await presp.json();
+    if((prespjson.detail ?? "").startsWith("Request was throttled"))
+        await sleep(parseInt(prespjson.detail.split('available in ')[1].split(' seconds')[0]) * 1000);
+    else
+        await sleep(5000);
   }
 }
 buyall();
