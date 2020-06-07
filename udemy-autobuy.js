@@ -114,6 +114,7 @@ async function buyall() {
         "method" : "POST",
         "mode" : "cors"
       });
+      await sleep(3000);
     }
     await sleep(2000);
   }
