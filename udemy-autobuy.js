@@ -34,7 +34,7 @@ async function buyall() {
   for (courseindex in courses) {
     var cid = courses[courseindex].split("|")[0];
     var coupon = courses[courseindex].split("|")[1];
-    const twitterResponse = await fetch("https://www.udemy.com/api-2.0/shopping-carts/me/", {
+    const cartResponse = await fetch("https://www.udemy.com/api-2.0/shopping-carts/me/", {
       "credentials" : "include",
       "headers" : {
         "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0",
@@ -50,7 +50,7 @@ async function buyall() {
       "referrer" : "https://www.udemy.com/",
       "mode" : "cors"
     });
-    var etag = twitterResponse.headers.get("etag");
+    var etag = cartResponse.headers.get("etag");
     await fetch("https://www.udemy.com/api-2.0/shopping-carts/me/cart/", {
       "credentials" : "include",
       "headers" : {
