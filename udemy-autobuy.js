@@ -1,6 +1,23 @@
 // Usage: edit "courses" variable, go to udemy.com, press F12, paste this to console and run.
 // todo: parse rate limiting and wait accordingly, add course and coupons in 1 request
 
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 function sleep(ms) {
   return new Promise((resolve) => {
     return setTimeout(resolve, ms);
@@ -18,7 +35,20 @@ async function buyall() {
     var cid = courses[courseindex].split("|")[0];
     var coupon = courses[courseindex].split("|")[1];
     const twitterResponse = await fetch("https://www.udemy.com/api-2.0/shopping-carts/me/", {
-      "credentials" : "include"
+      "credentials" : "include",
+      "headers" : {
+        "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0",
+        "Accept" : "application/json, text/plain, */*",
+        "Accept-Language" : "en-US,en;q=0.5",
+        "Content-Type" : "application/json;charset=utf-8",
+        "X-Requested-With" : "XMLHttpRequest",
+        "Authorization" : "Bearer " + getCookie("access_token"),
+        "X-Udemy-Authorization" : "Bearer " + getCookie("access_token"),
+        "Pragma" : "no-cache",
+        "Cache-Control" : "no-cache"
+      },
+      "referrer" : "https://www.udemy.com/",
+      "mode" : "cors"
     });
     var etag = twitterResponse.headers.get("etag");
     await fetch("https://www.udemy.com/api-2.0/shopping-carts/me/cart/", {
