@@ -85,7 +85,7 @@ async function buyall() {
             "Cache-Control": "no-cache"
         },
         "referrer": "https://www.udemy.com/",
-        "body": "{\"checkout_event\":\"Submit\",\"shopping_cart\":{\"items\":[{\"buyableContext\":{\"contentLocaleId\":null},\"buyableId\":"+cid+",\"buyableType\":\"course\",\"discountInfo\":{\"code\":\""+coupon+"\"},\"purchasePrice\":{\"amount\":0,\"price_string\":\"Free\",\"currency_symbol\":\"$\",\"currency\":\"USD\"}}]},\"payment_info\":{\"payment_vendor\":\"Free\",\"payment_method\":\"free-method\"}}",
+        "body": "{\"checkout_environment\":\"Marketplace\",\"checkout_event\":\"Submit\",\"shopping_info\":{\"items\":[{\"discountInfo\":{\"code\":\""+coupon+"\"},\"price\":{\"amount\":0,\"currency\":\"TRY\"},\"buyable\":{\"id\":"+cid+",\"type\":\"course\"}}],\"is_cart\":true},\"payment_info\":{\"method_id\":\"0\",\"payment_vendor\":\"Free\",\"payment_method\":\"free-method\"},\"tax_info\":{\"tax_rate\":18,\"billing_location\":{\"country_code\":\"TR\",\"secondary_location_info\":null},\"currency_code\":\"try\",\"transaction_items\":[{\"tax_included_amount\":0,\"tax_excluded_amount\":0,\"tax_amount\":0,\"udemy_txn_item_reference\":\"course-"+cid+"\"}],\"tax_breakdown_type\":\"tax_inclusive\"}}",
         "method": "POST",
         "mode": "cors"
     });
