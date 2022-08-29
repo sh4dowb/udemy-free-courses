@@ -90,7 +90,7 @@ async function buyall() {
         "mode": "cors"
     });
     var prespjson = await presp.json();
-    if((prespjson.detail ?? "").startsWith("Request was throttled"))
+    if((prespjson.detail ?? "").indexOf("available in ") > -1)
         await sleep(parseInt(prespjson.detail.split('available in ')[1].split(' seconds')[0]) * 1000);
     else
         await sleep(5000);
